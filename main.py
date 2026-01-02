@@ -1,6 +1,9 @@
 from handtrackermodule import handDetector
 import cv2
 import time
+import torch
+
+model = torch.load(f="models/model.pth", weights_only=False)
 
 cap = cv2.VideoCapture(0)
 hands = handDetector(maxHands=1)
@@ -15,10 +18,11 @@ while cap.isOpened():
 
     img = cv2.resize(img, (640, 400))
     img = hands.findHands(img)
-    positions = hands.findPosition(img)
-    print("=--------=----------=")
-    print(positions)
-    print("=--------=----------=")
+    landmarks = hands.findPosition(img)
+
+    #TODO implement preds with softmax and make a bounding box for hand
+    preds = model()
+
     cTime = time.time()
     fps = int(1//(cTime-pTime))
     pTime = cTime
