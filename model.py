@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-class model(nn.Module):
-    def __init__(self, inFeatures = 21, outFeatures = 3):
+class MyModel(nn.Module):
+    def __init__(self, inFeatures = 42, outFeatures = 3):
         super().__init__()
 
         self.net = nn.Sequential(

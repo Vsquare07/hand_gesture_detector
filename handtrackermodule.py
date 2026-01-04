@@ -29,28 +29,13 @@ class handDetector():
                                                landmark_drawing_spec = landmark_spec, 
                                                connection_drawing_spec=connection_spec)
         return img
-    def findPosition(self, img, tracking_id = None, handNo=0, draw=True):
+    def findPosition(self, img, handNo=0):
         lmList = []
         if self.results.multi_hand_landmarks:
             myHand = self.results.multi_hand_landmarks[handNo]
-
-            if tracking_id is None:
-                for id, lm in enumerate(myHand.landmark):
-                    h, w, c = img.shape
-                    cx, cy = int(lm.x * w), int(lm.y * h)
-                    lmList.append([id, cx, cy])
-                    if draw:
-                        cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED)
-            
-            else:
-                for id, lm in enumerate(myHand.landmark):
-                    h, w, c = img.shape
-                    cx, cy = int(lm.x * w), int(lm.y * h)
-
-                    if id == tracking_id:
-                        x = cx
-                        y = cy
-                        if draw:
-                            cv2.circle(img, (x, y), 15, (255, 0, 255), cv2.FILLED)
-                    lmList.append([id, cx, cy])
+            for lm in myHand.landmark:
+                h, w, c = img.shape
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                lmList.append([cx,cy])
+        
         return lmList
