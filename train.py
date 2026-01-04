@@ -82,10 +82,8 @@ for epoch in range(EPOCHS):
         loss.backward()
         optimizer.step()
 
-        if(counter == 10000):
-            break
     net_loss /= counter
     loss_arr.append(net_loss)
 
-plt.plot(loss_arr, epoch_arr)
-torch.save(model, "models/model.pth")
+#plt.plot(loss_arr, epoch_arr)
+torch.save(model, "models/model1.pth")

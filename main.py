@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-model = torch.load(f="models/model.pth", weights_only=False)
+model = torch.load(f="models/model1.pth", weights_only=False)
 model = model.to(device = "cpu")
 
 cap = cv2.VideoCapture(0)
