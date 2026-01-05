@@ -2,4 +2,4 @@ This project uses the predictions made by mediapipe's hand landmarks to predict 
 
 The live camera feed is provided by opencv library
 
-I used <a link="https://github.com/hukenovs/hagrid/tree/master">Hagrid data set</a> to train the model
+I used <a href="https://github.com/hukenovs/hagrid/tree/master">Hagrid data set</a> to train the model
