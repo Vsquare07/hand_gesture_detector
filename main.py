@@ -34,7 +34,7 @@ while cap.isOpened():
             lms.append(x)
             lms.append(y)
             lms.append(z)
-        print(lms)
+            
         with torch.inference_mode():
             pred = model(torch.tensor(lms, dtype=torch.float))
             pred_prob = torch.softmax(pred, dim=0)

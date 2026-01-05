@@ -56,12 +56,12 @@ class CustomDataset(torch.utils.data.Dataset):
             lms.append(x)
             lms.append(y)
             lms.append(z)
+        #I did this so that if the mediapipe model doesnt work on an image, it atleast gives an output of same size instead of empty list
         if(len(lms)==0):
             lms = [0]*63
         return torch.tensor(lms, dtype=torch.float), torch.tensor(labels, dtype=torch.float)
     
 trainDataset = CustomDataset("dataset")
-#weights = torch.tensor([31625,31245,2165], dtype=torch.float, device=DEVICE)
 loss_fn = nn.BCELoss()
 loss_arr = []
 epoch_arr = []
