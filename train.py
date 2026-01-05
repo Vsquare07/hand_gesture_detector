@@ -11,16 +11,15 @@ import cv2
 import matplotlib.pyplot as plt
 from tqdm.auto import tqdm
 
-EPOCHS = 1
-LR = 0.001
-BATCH_SIZE = 16
+EPOCHS = 15
+LR = 0.01
 #DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 
 hands = handDetector(maxHands=1)
 model = MyModel()
 model = model.to(device=DEVICE)
-loss_fn = nn.BCELoss()
+
 optimizer = torch.optim.Adam(model.parameters(), LR)
 
 from pathlib import Path
@@ -28,8 +27,7 @@ from PIL import Image
 
 classes = {
     "dislike" : 0,
-    "like" : 1,
-    "none" : 2
+    "like" : 1
 }
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, tarDir):
@@ -45,45 +43,44 @@ class CustomDataset(torch.utils.data.Dataset):
         img_np = cv2.resize(img_np, (640,640))
         label_name = self.paths[idx].parent.name
         label = torch.tensor(classes[label_name])
-        labels = [0,0,0]
+        labels = [0,0]
         labels[label]=1
         showHands = hands.findHands(img_np)
         landmarks = hands.findPosition(img_np)
         lms = []
-        for x,y in landmarks:
+        for x,y,z in landmarks:
             x = float(x)
             y = float(y)
             x/=640
             y/=400
             lms.append(x)
             lms.append(y)
+            lms.append(z)
         if(len(lms)==0):
-            lms = [0]*42
+            lms = [0]*63
         return torch.tensor(lms, dtype=torch.float), torch.tensor(labels, dtype=torch.float)
     
 trainDataset = CustomDataset("dataset")
-
+#weights = torch.tensor([31625,31245,2165], dtype=torch.float, device=DEVICE)
+loss_fn = nn.BCELoss()
 loss_arr = []
 epoch_arr = []
 for epoch in range(EPOCHS):
-    epoch_arr.append(epoch)
-    net_loss = 0
     counter = 0
     for landmarks, labels in tqdm(trainDataset):
         landmarks = landmarks.to(device = DEVICE)
         labels = labels.to(device=DEVICE)
-        if(landmarks == [0]*42):
+        if(landmarks == [0]*63):
             continue
         counter += 1
         pred = model(landmarks)
         loss = loss_fn(pred, labels)
-        net_loss += loss.item()
+        epoch_arr.append(counter)
+        loss_arr.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-    net_loss /= counter
-    loss_arr.append(net_loss)
-
-#plt.plot(loss_arr, epoch_arr)
-torch.save(model, "models/model1.pth")
+torch.save(model, "models/model5.pth")
+plt.plot(epoch_arr, loss_arr)
+plt.show()

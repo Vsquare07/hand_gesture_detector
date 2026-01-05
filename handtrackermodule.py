@@ -35,7 +35,7 @@ class handDetector():
             myHand = self.results.multi_hand_landmarks[handNo]
             for lm in myHand.landmark:
                 h, w, c = img.shape
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                lmList.append([cx,cy])
+                cx, cy, cz = int(lm.x * w), int(lm.y * h), lm.z
+                lmList.append([cx,cy,cz])
         
         return lmList
